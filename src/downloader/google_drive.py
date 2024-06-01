@@ -2,8 +2,11 @@
 
 from typing import Any, Self
 
-import gdown
-
+#import gdown
+class gdown_dummy():
+    def __getattriubte__(self, *args, **kwargs):
+        raise Exception('GoogleDrive functionality disabled in this fork')
+gdown = gdown_dummy()
 from src.app import APP
 from src.downloader.download import Downloader
 
