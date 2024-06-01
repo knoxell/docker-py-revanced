@@ -6,5 +6,6 @@ services:
     container_name: revanced-builder
     env_file:
       - .env
+    read_only: true
     volumes:
-      - .:/app:z
+      - ./data:/app/apks:rw

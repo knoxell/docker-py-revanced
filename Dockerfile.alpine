@@ -35,5 +35,8 @@ USER revanced
 # Copy application code
 COPY --chown=${USER} . ${APP_HOME}
 
+# Create VOLUME
+VOLUME ${APP_HOME}/apks
+
 # Set the default command to run the entrypoint script
 CMD [ "sh", "-c", "python main.py"]

@@ -127,10 +127,10 @@ def write_changelog_to_file(updates_info: dict[str, Any]) -> None:
 
         # Add row to the Markdown table string
         markdown_table += f"\n| {name_link} | {version} | {changelog} | {published_at} | {built_by} |"
-    with Path(changelog_file).open("w", encoding="utf_8") as file1:
+    with Path(resource_folder, changelog_file).open("w", encoding="utf_8") as file1:
         file1.write(markdown_table)
-    Path(changelog_json_file).write_text(json.dumps(changelogs, indent=4) + "\n")
-    Path(updates_file).write_text(json.dumps(updates_info, indent=4, default=str) + "\n")
+    Path(resource_folder, changelog_json_file).write_text(json.dumps(changelogs, indent=4) + "\n")
+    Path(resource_folder, updates_file).write_text(json.dumps(updates_info, indent=4, default=str) + "\n")
 
 
 def get_parent_repo() -> str:
@@ -217,7 +217,7 @@ def check_java() -> None:
 
 def delete_old_changelog() -> None:
     """The function `delete_old_changelog` deleted old changelog file."""
-    Path(changelog_file).unlink(missing_ok=True)
+    Path(resource_folder, changelog_file).unlink(missing_ok=True)
 
 
 def apkmirror_status_check(package_name: str) -> Any:
