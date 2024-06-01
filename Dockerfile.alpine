@@ -1,0 +1,39 @@
+# Use a specific version of the base Python image
+ARG PYTHON_VERSION=3.12-alpine
+
+FROM python:${PYTHON_VERSION} AS python
+
+
+# Set ENVs
+ENV PYTHONUNBUFFERED 1
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV LANG='en_GB.UTF-8' LANGUAGE='en_GB:en' LC_ALL='en_GB.UTF-8'
+
+# Update package lists and install required packages
+RUN apk add --no-cache -U musl musl-utils musl-locales tzdata git openjdk17 && \
+	echo "export LC_ALL=$LC_ALL" >> /etc/profile.d/locale.sh && \
+	sed -i "s|LANG=C.UTF-8|LANG=$LANG|" /etc/profile.d/locale.sh && \
+	locale  && \
+	java -version
+
+# Copy and install Python dependencies
+COPY requirements.txt .
+RUN python -m pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
+
+# Set ARGs
+ARG APP_HOME=/app
+WORKDIR ${APP_HOME}
+ARG USER=revanced
+
+# Add and set User to non root user
+RUN adduser -D -u 1000 -s /bin/sh -h ${APP_HOME} ${USER} && \
+	chown ${USER} ${APP_HOME} && \
+	mkdir -p ${APP_HOME}/apks
+USER revanced
+
+# Copy application code
+COPY --chown=${USER} . ${APP_HOME}
+
+# Set the default command to run the entrypoint script
+CMD [ "sh", "-c", "python main.py"]
